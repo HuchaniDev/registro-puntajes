@@ -1,0 +1,47 @@
+<div class=" bg-[#98b8da] grid grid-flow-row justify-center p-2">
+
+    <div class="w-full m-2">
+        <h1 class="text-center font-semibold w-full">Lista de Participantes</h1>
+    </div>
+
+    <div class="flex justify-end">
+        <button 
+        class="bg-teal-500 rounded-md border-[2px] border-teal-700 m-3 py-0.5 px-5 font-semibold hover:bg-teal-700 hover:text-white"
+        routerLink="/create-user">
+        registrar
+        </button>
+        
+        <button 
+        class="bg-teal-500 rounded-md border-[2px] border-teal-700 m-3 py-0.5 px-5 font-semibold hover:bg-teal-700 hover:text-white"
+        routerLink="#">
+        ver preguntas
+        </button>
+        
+        <button 
+        class="bg-teal-500 rounded-md border-[2px] border-teal-700 m-3 py-0.5 px-5 font-semibold hover:bg-teal-700 hover:text-white"
+        routerLink="#">
+        preguntar
+        </button>
+
+    </div>
+
+    <div class=" border-[2px] border-teal-700 w-[600px] h-60 rounded">
+
+        <div >
+            <div class="grid grid-cols-2 bg-slate-400 font-bold px-2 py-1 ">
+                <h1>Nombre</h1>
+                <h1>Puntos</h1>
+            </div>
+            
+            <ul 
+            *ngFor="let user of items$ |async"
+            class="bg-slate-300 grid grid-cols-2 m-1 rounded"
+            >   
+                <li>{{user.userName }}</li>
+                <li>{{user.userCode}}</li>
+                
+            </ul>
+            
+        </div>
+    </div>
+</div>

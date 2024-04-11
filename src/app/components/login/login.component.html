@@ -1,0 +1,20 @@
+<div class="flex justify-center w-full h-screen bg-[#052759]">
+    <div class=" mt-64 bg-[#C2E8FF] rounded-[12px] py-4 px-10 w-[80%] md:w-96 h-48">
+        <div class="grid grid-flow-row gap-2 mt-3">
+            <h4 class="font-semibold">Password</h4>
+            
+            <input 
+            type="text"
+            [(ngModel)]="password"
+            class="p-1 bg-slate-200 border-sky-300 border-[2px] rounded focus:outline-[#5482B3]">
+            
+            <div class="flex justify-center">
+                <button
+                class="m-2 p-1 rounded bg-[#5482b3] w-32 font-semibold hover:bg-[#3a6592] hover:text-white"
+                (click)="login()"
+                >Login</button>
+            </div>
+        </div>
+    </div>
+
+</div>
