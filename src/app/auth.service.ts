@@ -9,21 +9,38 @@ import { UsersService } from './services/users.service';
   providedIn: 'root'
 })
 export class AuthService implements OnInit{
-  private loggedIn = new BehaviorSubject<boolean>(false);
-  private user!:any[];
 
-  private userLogin:string='';
+
+
+  private loggedIn = new BehaviorSubject<boolean>(false);
+  public userLogin:string='';
+  
+
+  private user:any[]=[];
 
   constructor(private userservice:UsersService)  {
+    this.getusers()
+
+    const loggedInStatus = localStorage.getItem('loggedIn');
+    const userLog =localStorage.getItem('userCode');
+    if(loggedInStatus){
+      this.loggedIn.next(JSON.parse(loggedInStatus));
+      this.userLogin= String(userLog);
+    }
+
+
+  }
+
+  ngOnInit() {
+  }
+
+  getusers(){
     this.userservice.users.subscribe((users:any[])=>{
       this.user = users;
     },(error)=>{
       console.log("error de get datos");
     }
     );
-  }
-
-  ngOnInit() {
   }
 
   login(password: string): Observable<boolean>{
@@ -34,9 +51,13 @@ export class AuthService implements OnInit{
         this.loggedIn.next(true);
         console.log("encontrado:",i.userCode);
         this.userLogin=password;
+        this.saveLoggedInStatus(true, password)
+        console.log('usuario logged: ',this.userLogin)
         return of(true).pipe(delay(1000));
       }
     }
+
+
     return of(false).pipe(delay(1000)); // Simula una respuesta asincrónica
     
 
@@ -48,18 +69,28 @@ export class AuthService implements OnInit{
   //   }
   }
 
+  saveLoggedInStatus(status:boolean, user:string){
+    localStorage.setItem('loggedIn',JSON.stringify(status));
+    this.loggedIn.next(status);
+
+    localStorage.setItem('userCode',user);
+  }
+
+  getLoggedInStatus():BehaviorSubject<boolean>{
+    return this.loggedIn;
+  }
+
+
   logout(): void {
     // Simula un cierre de sesión
     this.loggedIn.next(false);
+    this.saveLoggedInStatus(false,'');
   }
 
   isLoggedIn(): boolean {
-
     return this.loggedIn.value;
   }
 
-  get logged():string{
-    return this.userLogin;
-  }
+  
 
 }

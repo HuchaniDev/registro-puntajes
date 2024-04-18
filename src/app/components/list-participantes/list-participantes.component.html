@@ -1,51 +1,105 @@
-<div class="h-screen bg-[#98b8da]   ">
+<div class="min-h-full bg-[#98b8da] flex-row justify-center">
 
-<div class="  grid grid-flow-row justify-center p-2">
+    <div class="flex bg-[#052759]  justify-between h-14 rounded-b-[10px] px-10">
+        <div class="flex p-2 items-center space-x-3">
+            <div class=" border-sky-500 border-[2px] p-1 rounded-full">
+                <img class="bg-white rounded-full w-[35px]" src="https://cdn.icon-icons.com/icons2/2574/PNG/512/profile_picture_user_icon_153847.png" alt="user_log">
+            </div>
+
+            <h1 class="text-sky-400 font-semibold text-[20px]">{{ userLogged() }}</h1>
+        </div>
+        <div class="flex items-center p-2">
+            <button
+            class="bg-sky-300 border-sky-500 border-[2px] rounded-[8px] px-6 py-0.5 font-medium hover:text-red-600"
+            (click)="logout()"
+            routerLink="/login"
+            >log_out</button>
+        </div>
+    </div>
+
+<div class="grid grid-flow-row justify-center p-2 ">
 
     <div class="w-full m-2">
-        <h1 class="text-center font-semibold w-full">Lista de Participantes</h1>
+        <h1 class="text-center font-bold text-[30px] w-full">Lista de Participantes</h1>
     </div>
     
 
     <div class="flex justify-end">
         <button 
+        (click)="list()"
         *ngIf="admin"
         class="bg-teal-500 rounded-md border-[2px] border-teal-700 m-3 py-0.5 px-5 font-semibold hover:bg-teal-700 hover:text-white"
-        routerLink="/create-user">
+        routerLink="/registro"
+        >
         registrar
         </button>
         
         <button 
         *ngIf="admin"
         class="bg-teal-500 rounded-md border-[2px] border-teal-700 m-3 py-0.5 px-5 font-semibold hover:bg-teal-700 hover:text-white"
-        routerLink="#">
+        (click)="respPregunta()"
+        >
         ver preguntas
         </button>
+        <!-- pop up -->
+        <div id="popup" class="fixed inset-0 flex items-center justify-center hidden bg-gray-900 bg-opacity-60">
+            <div class="bg-white p-8 pb-8 rounded-[15px] shadow-2xl">
+                
+                <div class="flex justify-center items-center bg-[#052759] rounded-md">
+                    <h2 class="text-lg font-semibold text-white ">Alert</h2>
+                </div>
+                <div class="m-3 ">
+                    <p>Aceptar pregunta de ID: <b>{{ participante?.userCode }}</b></p>
+                    <p>{{ participante?.userName }}</p>
+                </div>
+
+                <div class="flex justify-between mt-5 text-white">
+                    <button (click)="rechazar()" class="bg-red-500 px-8 rounded-md  border-red-800 border-[2px] hover:bg-red-700">No</button>
+                    <button (click)="aceptar()" class="bg-green-500 px-8 rounded-md border-green-800 border-[2px] hover:bg-green-700">Yes</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="listaVacia" class="fixed inset-0 flex items-center justify-center hidden bg-gray-900 bg-opacity-60">
+            <div class="bg-white p-8 pb-8 rounded-[15px] shadow-2xl">
+                
+                <div class="flex justify-center items-center bg-[#052759] rounded-md">
+                    <h2 class="text-lg font-semibold text-white ">Alert</h2>
+                </div>
+                <div class="m-3 ">
+                    <p>Ya repondio todas las preguntas..!</p>
+                </div>
+
+                <div class="flex justify-center mt-5 text-white">
+                    <button (click)="openPopup(3)" class="bg-green-500 px-8 rounded-md border-green-800 border-[2px] hover:bg-green-700">aceptar</button>
+                </div>
+            </div>
+        </div>
         
         <button 
         *ngIf="!admin"
         class="bg-teal-500 rounded-md border-[2px] border-teal-700 m-3 py-0.5 px-5 font-semibold hover:bg-teal-700 hover:text-white"
-        routerLink="#">
+        (click)="preguntar()"
+        >
         preguntar
         </button>
 
     </div>
 
-    <div class=" border-[2px] border-teal-700 w-[600px] h-60 rounded">
+    <div class=" border-[2px] border-teal-700 w-[900px]  min-h-screen rounded">
 
         <div >
-            <div class="grid grid-cols-2 bg-slate-400 font-bold px-2 py-1 ">
+            <div class="grid grid-cols-2 bg-slate-400 font-bold px-2 py-1 text-center">
                 <h1>Nombre</h1>
                 <h1>Puntos</h1>
             </div>
             
             <ul 
             *ngFor="let user of participantes$ |async"
-            class="bg-slate-300 grid grid-cols-2 m-1 rounded"
+            class="bg-slate-300 grid grid-cols-2 m-1 rounded "
             >   
-                <li>{{user.userName }}</li>
-                <li>{{user.puntos}}</li>
-                
+                <li class="pl-2" *ngIf="user.userName!='Administrador'">{{user.userName }}</li>
+                <li class="text-center" *ngIf="user.userName!='Administrador'">{{user.puntos}}</li>
             </ul>
 
             <!-- {{ participantes$|async |json }} -->
@@ -55,3 +109,20 @@
     </div>
 </div>
 </div>
+
+
+
+
+
+
+
+
+<!-- 
+<div class="flex justify-end">
+
+    <button (click)="openPopup(0)" id="closePopupButton" class="text-gray-500 hover:text-gray-700 focus:outline-none ">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+    </button>
+</div> -->
