@@ -146,6 +146,4 @@ export class ListParticipantesComponent implements OnInit {
     
     this.openPopup(0);
   }
-
-
 }
