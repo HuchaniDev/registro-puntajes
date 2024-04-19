@@ -16,6 +16,9 @@ export class ListParticipantesComponent implements OnInit {
   users:User[]=[];
   userlogged!:User;
   admin:boolean=false;
+  fecha!:string;
+
+  preguntaron:User[]=[{userName:'', puntos: 0, userCode:0},];
 
   participante?:User ; 
 
@@ -29,7 +32,10 @@ export class ListParticipantesComponent implements OnInit {
                 private preguntaService:PreguntasService,
                 private elementRef:ElementRef,){
 
+    this.fecha=this.Fecha
     this.participantes$=this.userService.users;
+    
+    
   }
 
   ngOnInit(): void {
@@ -92,13 +98,29 @@ export class ListParticipantesComponent implements OnInit {
 
   respPregunta(){
     this.participante = this.participantes.pop();
+    let flag=false;
     if(this.participante){
-      this.openPopup(1)
+      console.log('hay participante',this.participantes);
+      
+      this.preguntaron.forEach(user=>{
+        if(user.userCode==this.participante?.userCode){
+          console.log('ya pregunto');
+          flag=true
+        }
+      });
+
+      if(!flag) {
+        this.preguntaron.push(this.participante!);
+        
+      }
+        this.openPopup(1);
     }
     else{
       this.openPopup(2)
     }
     //
+    console.log({'actualizado':this.preguntaron});
+    
   }
 
 
@@ -138,12 +160,29 @@ export class ListParticipantesComponent implements OnInit {
     this.openPopup(0);
   }
 
-  aceptar(){
+  aceptar(){ 
     this.preguntaService.delete(Number(this.participante?.userCode))
-    let puntos = Number(this.participante?.puntos)+1;
-
-    this.userService.updatePuntos(Number(this.participante?.userCode),puntos);
+    let puntos = Number(this.participante?.puntos)
     
     this.openPopup(0);
+    this.sumarPuntos(puntos,true);
+
+  }
+
+  sumarPuntos(puntos:number, flag:boolean){
+    if (this.fecha!=this.Fecha){
+        this.fecha=this.Fecha
+        console.log('son igual');
+        this.userService.updatePuntos(Number(this.participante?.userCode),(puntos+1));
+    
+    }
+  }
+
+  get Fecha():string{
+    let date = new Date();
+    let day=date.getDate().toString().padStart(2, '0');
+    let month= (date.getMonth()  + 1).toString().padStart(2, '0');;
+    let year = date.getFullYear();
+    return `${day}/${month}/${year}`
   }
 }
